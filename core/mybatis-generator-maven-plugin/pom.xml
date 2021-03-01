@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2006-2020 the original author or authors.
+       Copyright 2006-2021 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.mybatis.generator</groupId>
-    <artifactId>mybatis-generator</artifactId>
-    <version>1.4.1-SNAPSHOT</version>
+    <artifactId>alibaba-mybatis-generator</artifactId>
+    <version>1.4.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>mybatis-generator-maven-plugin</artifactId>
+  <artifactId>alibaba-mybatis-generator-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>MyBatis Generator Maven Plugin</name>
 
@@ -78,6 +78,15 @@
       <groupId>org.mybatis.generator</groupId>
       <artifactId>mybatis-generator-core</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.taobao.tddl</groupId>
+      <artifactId>tddl-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.taobao.eagleeye</groupId>
+      <artifactId>eagleeye-core</artifactId>
     </dependency>
   </dependencies>
 

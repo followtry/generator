@@ -1,5 +1,5 @@
 /*
- *    Copyright 2006-2020 the original author or authors.
+ *    Copyright 2006-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.mybatis.generator.internal.util.messages.Messages;
 import org.mybatis.generator.logging.LogFactory;
 
 /**
+ * mybatis生成插件配置属性的mojo
  * Goal which generates MyBatis artifacts.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES,
@@ -126,6 +127,12 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
      */
     @Parameter(property = "mybatis.generator.tableNames")
     private String tableNames;
+
+    /**
+     * Comma delimited list of table names to generate.
+     */
+    @Parameter(property = "mybatis.generator.appName")
+    private String appName;
 
     /**
      * Comma delimited list of contexts to generate.
@@ -302,7 +309,7 @@ public class MyBatisGeneratorMojo extends AbstractMojo {
         }
 
         SqlScriptRunner scriptRunner = new SqlScriptRunner(sqlScript,
-                jdbcDriver, jdbcURL, jdbcUserId, jdbcPassword);
+                jdbcDriver, jdbcURL, jdbcUserId, jdbcPassword,appName);
         scriptRunner.setLog(getLog());
         scriptRunner.executeScript();
     }

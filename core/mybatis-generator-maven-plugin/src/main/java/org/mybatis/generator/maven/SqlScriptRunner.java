@@ -1,5 +1,5 @@
 /*
- *    Copyright 2006-2020 the original author or authors.
+ *    Copyright 2006-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import com.taobao.tddl.client.jdbc.TDataSource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.mybatis.generator.internal.ObjectFactory;
@@ -48,11 +49,13 @@ public class SqlScriptRunner {
     private String url;
     private String userid;
     private String password;
+    private String appName;
     private String sourceFile;
     private Log log;
 
     public SqlScriptRunner(String sourceFile, String driver, String url,
-            String userId, String password) throws MojoExecutionException {
+            String userId, String password,String appName) throws MojoExecutionException {
+
 
         if (!StringUtility.stringHasValue(sourceFile)) {
             throw new MojoExecutionException("SQL script file is required");
@@ -62,18 +65,30 @@ public class SqlScriptRunner {
             throw new MojoExecutionException("JDBC Driver is required");
         }
 
+        this.sourceFile = sourceFile;
+        this.driver = driver;
+
+        if (StringUtility.stringHasValue(appName)) {
+            this.appName = appName;
+            return;
+        }
+
         if (!StringUtility.stringHasValue(url)) {
             throw new MojoExecutionException("JDBC URL is required");
         }
-
-        this.sourceFile = sourceFile;
-        this.driver = driver;
         this.url = url;
         this.userid = userId;
         this.password = password;
     }
 
     public void executeScript() throws MojoExecutionException {
+        if (StringUtility.stringHasValue(appName)){
+            executeAppScript();
+            return;
+        }
+        executeOriginScript();
+    }
+    public void executeOriginScript() throws MojoExecutionException {
 
         Connection connection = null;
 
@@ -118,6 +133,42 @@ public class SqlScriptRunner {
             throw new MojoExecutionException("InstantiationException: " + e.getMessage());
         } catch (IllegalAccessException e) {
             throw new MojoExecutionException("IllegalAccessException: " + e.getMessage());
+        } finally {
+            closeConnection(connection);
+        }
+    }
+
+    public void executeAppScript() throws MojoExecutionException {
+
+        TDataSource ds = new TDataSource();
+        ds.setAppName("ORDER_DATA_CENTER_APP");
+        ds.setDynamicRule(true);
+        ds.init();
+        Connection connection = null;
+
+        try {
+            connection = ds.getConnection();
+            connection.setAutoCommit(false);
+
+            Statement statement = connection.createStatement();
+
+            BufferedReader br = getScriptReader();
+
+            String sql;
+
+            while ((sql = readStatement(br)) != null) {
+                statement.execute(sql);
+            }
+
+            closeStatement(statement);
+            connection.commit();
+            br.close();
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException("File note found: " + sourceFile);
+        } catch (SQLException e) {
+            throw new MojoExecutionException("SqlException: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new MojoExecutionException("IOException: " + e.getMessage(), e);
         } finally {
             closeConnection(connection);
         }
