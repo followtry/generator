@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ package org.mybatis.generator.runtime.kotlin.elements;
 
 import org.mybatis.generator.api.dom.kotlin.KotlinFile;
 import org.mybatis.generator.api.dom.kotlin.KotlinFunction;
-import org.mybatis.generator.runtime.dynamic.sql.elements.v2.Utils;
+import org.mybatis.generator.runtime.dynamic.sql.elements.Utils;
 
 public class SelectByPrimaryKeyMethodGenerator extends AbstractKotlinFunctionGenerator {
-    private String mapperName;
-    private KotlinFragmentGenerator fragmentGenerator;
-    
+    private final String mapperName;
+    private final KotlinFragmentGenerator fragmentGenerator;
+
     private SelectByPrimaryKeyMethodGenerator(Builder builder) {
         super(builder);
         mapperName = builder.mapperName;
@@ -41,12 +41,12 @@ public class SelectByPrimaryKeyMethodGenerator extends AbstractKotlinFunctionGen
                 .build())
                 .withImport("org.mybatis.dynamic.sql.SqlBuilder.isEqualTo") //$NON-NLS-1$
                 .build();
-        
+
         addFunctionComment(functionAndImports);
 
         KotlinFunctionParts functionParts = fragmentGenerator.getPrimaryKeyWhereClauseAndParameters();
         acceptParts(functionAndImports, functionParts);
-        
+
         return functionAndImports;
     }
 
@@ -56,15 +56,15 @@ public class SelectByPrimaryKeyMethodGenerator extends AbstractKotlinFunctionGen
                 introspectedTable);
     }
 
-    public static class Builder extends BaseBuilder<Builder, SelectByPrimaryKeyMethodGenerator> {
+    public static class Builder extends BaseBuilder<Builder> {
         private String mapperName;
         private KotlinFragmentGenerator fragmentGenerator;
-        
+
         public Builder withMapperName(String mapperName) {
             this.mapperName = mapperName;
             return this;
         }
-        
+
         public Builder withFragmentGenerator(KotlinFragmentGenerator fragmentGenerator) {
             this.fragmentGenerator = fragmentGenerator;
             return this;
@@ -75,7 +75,6 @@ public class SelectByPrimaryKeyMethodGenerator extends AbstractKotlinFunctionGen
             return this;
         }
 
-        @Override
         public SelectByPrimaryKeyMethodGenerator build() {
             return new SelectByPrimaryKeyMethodGenerator(this);
         }

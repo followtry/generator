@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2018 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,24 +25,26 @@ import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.kotlin.KotlinFile;
+import org.mybatis.generator.api.dom.kotlin.KotlinType;
 
 /**
  * This plugin adds the java.io.Serializable marker interface to all generated
  * model objects.
- * 
+ *
  * <p>This plugin demonstrates adding capabilities to generated Java artifacts, and
  * shows the proper way to add imports to a compilation unit.
- * 
+ *
  * <p>Important: This is a simplistic implementation of serializable and does not
  * attempt to do any versioning of classes.
- * 
+ *
  * @author Jeff Butler
- * 
+ *
  */
 public class SerializablePlugin extends PluginAdapter {
 
-    private FullyQualifiedJavaType serializable;
-    private FullyQualifiedJavaType gwtSerializable;
+    private final FullyQualifiedJavaType serializable;
+    private final FullyQualifiedJavaType gwtSerializable;
     private boolean addGWTInterface;
     private boolean suppressJavaInterface;
 
@@ -61,8 +63,8 @@ public class SerializablePlugin extends PluginAdapter {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-        addGWTInterface = Boolean.valueOf(properties.getProperty("addGWTInterface")); //$NON-NLS-1$
-        suppressJavaInterface = Boolean.valueOf(properties.getProperty("suppressJavaInterface")); //$NON-NLS-1$
+        addGWTInterface = Boolean.parseBoolean(properties.getProperty("addGWTInterface")); //$NON-NLS-1$
+        suppressJavaInterface = Boolean.parseBoolean(properties.getProperty("suppressJavaInterface")); //$NON-NLS-1$
     }
 
     @Override
@@ -103,7 +105,7 @@ public class SerializablePlugin extends PluginAdapter {
             field.setInitializationString("1L"); //$NON-NLS-1$
             field.setStatic(true);
             field.setVisibility(JavaVisibility.PRIVATE);
-            
+
             if (introspectedTable.getTargetRuntime() == TargetRuntime.MYBATIS3_DSQL) {
                 context.getCommentGenerator().addFieldAnnotation(field, introspectedTable,
                         topLevelClass.getImportedTypes());
@@ -113,5 +115,13 @@ public class SerializablePlugin extends PluginAdapter {
 
             topLevelClass.addField(field);
         }
+    }
+
+    @Override
+    public boolean kotlinDataClassGenerated(KotlinFile kotlinFile, KotlinType dataClass,
+            IntrospectedTable introspectedTable) {
+        kotlinFile.addImport("java.io.Serializable"); //$NON-NLS-1$
+        dataClass.addSuperType("Serializable"); //$NON-NLS-1$
+        return true;
     }
 }

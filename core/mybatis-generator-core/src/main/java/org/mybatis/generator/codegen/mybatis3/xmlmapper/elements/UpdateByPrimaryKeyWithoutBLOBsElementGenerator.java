@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -28,10 +28,9 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 public class UpdateByPrimaryKeyWithoutBLOBsElementGenerator extends
         AbstractXmlElementGenerator {
 
-    private boolean isSimple;
+    private final boolean isSimple;
 
     public UpdateByPrimaryKeyWithoutBLOBsElementGenerator(boolean isSimple) {
-        super();
         this.isSimple = isSimple;
     }
 

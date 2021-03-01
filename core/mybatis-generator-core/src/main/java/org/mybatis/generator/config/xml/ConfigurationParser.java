@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,9 +43,9 @@ import org.xml.sax.SAXParseException;
 
 public class ConfigurationParser {
 
-    private List<String> warnings;
-    private List<String> parseErrors;
-    private Properties extraProperties;
+    private final List<String> warnings;
+    private final List<String> parseErrors;
+    private final Properties extraProperties;
 
     public ConfigurationParser(List<String> warnings) {
         this(null, warnings);
@@ -56,10 +55,10 @@ public class ConfigurationParser {
      * This constructor accepts a properties object which may be used to specify
      * an additional property set.  Typically this property set will be Ant or Maven properties
      * specified in the build.xml file or the POM.
-     * 
-     * <p>If there are name collisions between the different property sets, they will be 
+     *
+     * <p>If there are name collisions between the different property sets, they will be
      * resolved in this order:
-     * 
+     *
      * <ol>
      *   <li>System properties take highest precedence</li>
      *   <li>Properties specified in the &lt;properties&gt; configuration
@@ -67,7 +66,7 @@ public class ConfigurationParser {
      *   <li>Properties specified in this "extra" property set are
      *       lowest precedence.</li>
      * </ol>
-     * 
+     *
      * @param extraProperties an (optional) set of properties used to resolve property
      *     references in the configuration file
      * @param warnings any warnings are added to this array
@@ -113,6 +112,8 @@ public class ConfigurationParser {
             throws IOException, XMLParserException {
         parseErrors.clear();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         factory.setValidating(true);
 
         try {

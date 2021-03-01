@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 public class ResultMapWithoutBLOBsElementGenerator extends
         AbstractXmlElementGenerator {
 
-    private boolean isSimple;
+    private final boolean isSimple;
 
     public ResultMapWithoutBLOBsElementGenerator(boolean isSimple) {
         super();
@@ -159,7 +159,7 @@ public class ResultMapWithoutBLOBsElementGenerator extends
 
         answer.addElement(constructor);
     }
-    
+
     private Attribute generateColumnAttribute(IntrospectedColumn introspectedColumn) {
         return new Attribute("column", //$NON-NLS-1$
                 MyBatis3FormattingUtilities.getRenamedColumnNameForResultMap(introspectedColumn));

@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2018 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,28 +19,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-public class StringUtilityTest {
+class StringUtilityTest {
 
     @Test
-    public void testNoCatalog() {
+    void testNoCatalog() {
         String answer = StringUtility.composeFullyQualifiedTableName(null, "schema", "table", '.');
         assertEquals("schema.table", answer);
     }
 
     @Test
-    public void testNoSchema() {
+    void testNoSchema() {
         String answer = StringUtility.composeFullyQualifiedTableName("catalog", null, "table", '.');
         assertEquals("catalog..table", answer);
     }
 
     @Test
-    public void testAllPresent() {
+    void testAllPresent() {
         String answer = StringUtility.composeFullyQualifiedTableName("catalog", "schema", "table", '.');
         assertEquals("catalog.schema.table", answer);
     }
 
     @Test
-    public void testTableOnly() {
+    void testTableOnly() {
         String answer = StringUtility.composeFullyQualifiedTableName(null, null, "table", '.');
         assertEquals("table", answer);
     }

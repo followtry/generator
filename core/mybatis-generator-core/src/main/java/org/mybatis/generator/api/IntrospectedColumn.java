@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.mybatis.generator.internal.util.StringUtility;
 
 /**
  * This class holds information about an introspected column.
- * 
+ *
  * @author Jeff Butler
  */
 public class IntrospectedColumn {
@@ -63,7 +63,7 @@ public class IntrospectedColumn {
 
     protected IntrospectedTable introspectedTable;
 
-    protected Properties properties;
+    protected final Properties properties;
 
     // any database comment associated with this column. May be null
     protected String remarks;
@@ -132,22 +132,19 @@ public class IntrospectedColumn {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
 
-        sb.append("Actual Column Name: "); //$NON-NLS-1$
-        sb.append(actualColumnName);
-        sb.append(", JDBC Type: "); //$NON-NLS-1$
-        sb.append(jdbcType);
-        sb.append(", Nullable: "); //$NON-NLS-1$
-        sb.append(nullable);
-        sb.append(", Length: "); //$NON-NLS-1$
-        sb.append(length);
-        sb.append(", Scale: "); //$NON-NLS-1$
-        sb.append(scale);
-        sb.append(", Identity: "); //$NON-NLS-1$
-        sb.append(identity);
-
-        return sb.toString();
+        return "Actual Column Name: " + //$NON-NLS-1$
+                actualColumnName +
+                ", JDBC Type: " + //$NON-NLS-1$
+                jdbcType +
+                ", Nullable: " + //$NON-NLS-1$
+                nullable +
+                ", Length: " + //$NON-NLS-1$
+                length +
+                ", Scale: " + //$NON-NLS-1$
+                scale +
+                ", Identity: " + //$NON-NLS-1$
+                identity;
     }
 
     public void setActualColumnName(String actualColumnName) {
@@ -168,9 +165,9 @@ public class IntrospectedColumn {
         String typeName = getJdbcTypeName();
 
         return "BINARY".equals(typeName) || "BLOB".equals(typeName) //$NON-NLS-1$ //$NON-NLS-2$
-                || "CLOB".equals(typeName) || "LONGNVARCHAR".equals(typeName) //$NON-NLS-1$ //$NON-NLS-2$ 
+                || "CLOB".equals(typeName) || "LONGNVARCHAR".equals(typeName) //$NON-NLS-1$ //$NON-NLS-2$
                 || "LONGVARBINARY".equals(typeName) || "LONGVARCHAR".equals(typeName) //$NON-NLS-1$ //$NON-NLS-2$
-                || "NCLOB".equals(typeName) || "VARBINARY".equals(typeName); //$NON-NLS-1$ //$NON-NLS-2$ 
+                || "NCLOB".equals(typeName) || "VARBINARY".equals(typeName); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public boolean isStringColumn() {
@@ -194,11 +191,7 @@ public class IntrospectedColumn {
             return javaProperty;
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(prefix);
-        sb.append(javaProperty);
-
-        return sb.toString();
+        return prefix + javaProperty;
     }
 
     public void setJavaProperty(String javaProperty) {
@@ -342,7 +335,7 @@ public class IntrospectedColumn {
      * The platform specific type name as reported by the JDBC driver. This value is determined
      * from the DatabaseMetadata.getColumns() call - specifically ResultSet.getString("TYPE_NAME").
      * This value is platform dependent.
-     * 
+     *
      * @return the platform specific type name as reported by the JDBC driver
      */
     public String getActualTypeName() {

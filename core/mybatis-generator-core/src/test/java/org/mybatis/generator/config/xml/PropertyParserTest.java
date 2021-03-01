@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,125 +21,125 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
-public class PropertyParserTest {
-    
+class PropertyParserTest {
+
     @Test
-    public void testNoMatches() {
+    void testNoMatches() {
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(null);
-        
+
         String result = parser.parsePropertyTokens("${gen.code.package}.${gen.code.mapper}.${gen.code.subpackage}");
-        
+
         assertThat(result).isEqualTo("${gen.code.package}.${gen.code.mapper}.${gen.code.subpackage}");
     }
 
     @Test
-    public void testNoMarkers() {
+    void testNoMarkers() {
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(null);
-        
+
         assertThat(parser.parsePropertyTokens("someValue")).isEqualTo("someValue");
     }
 
     @Test
-    public void testBadFormat() {
+    void testBadFormat() {
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(null);
-        
+
         assertThat(parser.parsePropertyTokens("${someValue")).isEqualTo("${someValue");
     }
 
     @Test
-    public void testSingleValue() {
+    void testSingleValue() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         assertThat(parser.parsePropertyTokens("${gen.code.package}")).isEqualTo("value1");
         assertThat(parser.parsePropertyTokens("${gen.code.mapper}")).isEqualTo("value2");
         assertThat(parser.parsePropertyTokens("${gen.code.subpackage}")).isEqualTo("value3");
     }
 
     @Test
-    public void testSingleValueWithTrailingValue() {
+    void testSingleValueWithTrailingValue() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         assertThat(parser.parsePropertyTokens("${gen.code.package}.pg")).isEqualTo("value1.pg");
     }
 
     @Test
-    public void testTwoValues() {
+    void testTwoValues() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         assertThat(parser.parsePropertyTokens("${gen.code.package}.${gen.code.mapper}")).isEqualTo("value1.value2");
     }
 
     @Test
-    public void testTwoValuesOnly() {
+    void testTwoValuesOnly() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         assertThat(parser.parsePropertyTokens("${gen.code.package}${gen.code.mapper}")).isEqualTo("value1value2");
     }
 
     @Test
-    public void testTwoValuesWithTrailingValue() {
+    void testTwoValuesWithTrailingValue() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         String result = parser.parsePropertyTokens("${gen.code.package}.${gen.code.mapper}.pg");
-        
+
         assertThat(result).isEqualTo("value1.value2.pg");
     }
 
     @Test
-    public void testTwoValuesWithSingleCharacterTrailingValue() {
+    void testTwoValuesWithSingleCharacterTrailingValue() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         String result = parser.parsePropertyTokens("${gen.code.package}.${gen.code.mapper}.");
-        
+
         assertThat(result).isEqualTo("value1.value2.");
     }
 
     @Test
-    public void testThreeValues() {
+    void testThreeValues() {
         Properties properties = new Properties();
         properties.setProperty("gen.code.package", "value1");
         properties.setProperty("gen.code.mapper", "value2");
         properties.setProperty("gen.code.subpackage", "value3");
-        
+
         MyBatisGeneratorConfigurationParser parser = new MyBatisGeneratorConfigurationParser(properties);
-        
+
         String result = parser.parsePropertyTokens("${gen.code.package}.${gen.code.mapper}.${gen.code.subpackage}");
-        
+
         assertThat(result).isEqualTo("value1.value2.value3");
     }
 
 	@Test
-	public void testNestedValues() {
+	void testNestedValues() {
 		Properties properties = new Properties();
 		properties.put("domain", "foo");
 		properties.put("project.foo", "pfoo");

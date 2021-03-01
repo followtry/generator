@@ -1,17 +1,17 @@
-/**
- * Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
  */
 package mbg.test.mb3.dsql.kotlin
 
@@ -30,6 +30,7 @@ import mbg.test.mb3.generated.dsql.kotlin.model.*
 import mbg.test.mb3.generated.dsql.kotlin.model.mbgtest.IdRecord
 import mbg.test.mb3.generated.dsql.kotlin.model.mbgtest.TranslationRecord
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.within
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -38,6 +39,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 
 /**
  * @author Jeff Butler
@@ -372,7 +374,8 @@ class DynamicSqlTest : AbstractTest() {
             val returnedRecord = mapper.selectByPrimaryKey(2, 1)
 
             assertThat(returnedRecord).isNotNull()
-            assertThat(returnedRecord).isEqualToComparingFieldByField(record)
+            assertThat(returnedRecord).usingRecursiveComparison().ignoringFields("timestampfield").isEqualTo(record)
+            assertThat(returnedRecord?.timestampfield).isCloseTo(record.timestampfield, within(1, ChronoUnit.MILLIS))
         }
     }
 
@@ -1498,7 +1501,7 @@ class DynamicSqlTest : AbstractTest() {
             val returnedRecord = mapper.selectByPrimaryKey(generatedCustomerId)
 
             assertThat(returnedRecord).isNotNull()
-            assertThat(returnedRecord).isEqualToComparingFieldByField(record)
+            assertThat(returnedRecord).usingRecursiveComparison().isEqualTo(record)
         }
     }
 

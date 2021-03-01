@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2018 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,17 +31,17 @@ import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
-public class MyBatisGeneratorTest {
+class MyBatisGeneratorTest {
 
     @Test
-    public void testGenerateMyBatis3WithInvalidConfig() throws Exception {
+    void testGenerateMyBatis3WithInvalidConfig() throws Exception {
         List<String> warnings = new ArrayList<>();
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(this.getClass().getClassLoader().getResourceAsStream("generatorConfigMyBatis3_badConfig.xml"));
-            
+
         DefaultShellCallback shellCallback = new DefaultShellCallback(true);
 
-        InvalidConfigurationException e = 
+        InvalidConfigurationException e =
                 assertThrows(InvalidConfigurationException.class, () -> {
                     MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, shellCallback, warnings);
                     myBatisGenerator.generate(null, null, null, false);
@@ -51,7 +51,7 @@ public class MyBatisGeneratorTest {
     }
 
     @Test
-    public void testGenerateInvalidConfigWithNoConnectionSources() throws Exception {
+    void testGenerateInvalidConfigWithNoConnectionSources() {
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
         Context context = new Context(ModelType.HIERARCHICAL);
@@ -69,7 +69,7 @@ public class MyBatisGeneratorTest {
     }
 
     @Test
-    public void testGenerateInvalidConfigWithTwoConnectionSources() throws Exception {
+    void testGenerateInvalidConfigWithTwoConnectionSources() {
         List<String> warnings = new ArrayList<>();
         Configuration config = new Configuration();
         Context context = new Context(ModelType.HIERARCHICAL);

@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -59,9 +59,9 @@ public class Context extends PropertyHolder {
 
     private JavaClientGeneratorConfiguration javaClientGeneratorConfiguration;
 
-    private ArrayList<TableConfiguration> tableConfigurations;
+    private final ArrayList<TableConfiguration> tableConfigurations;
 
-    private ModelType defaultModelType;
+    private final ModelType defaultModelType;
 
     private String beginningDelimiter = "\""; //$NON-NLS-1$
 
@@ -73,7 +73,7 @@ public class Context extends PropertyHolder {
 
     private PluginAggregator pluginAggregator;
 
-    private List<PluginConfiguration> pluginConfigurations;
+    private final List<PluginConfiguration> pluginConfigurations;
 
     private String targetRuntime;
 
@@ -86,8 +86,6 @@ public class Context extends PropertyHolder {
     private KotlinFormatter kotlinFormatter;
 
     private XmlFormatter xmlFormatter;
-    
-    private boolean isJava8Targeted = true;
 
     public Context(ModelType defaultModelType) {
         super();
@@ -104,10 +102,6 @@ public class Context extends PropertyHolder {
 
     public void addTableConfiguration(TableConfiguration tc) {
         tableConfigurations.add(tc);
-    }
-
-    public JDBCConnectionConfiguration getJdbcConnectionConfiguration() {
-        return jdbcConnectionConfiguration;
     }
 
     public JavaClientGeneratorConfiguration getJavaClientGeneratorConfiguration() {
@@ -232,10 +226,6 @@ public class Context extends PropertyHolder {
         return defaultModelType;
     }
 
-    public List<TableConfiguration> getTableConfigurations() {
-        return tableConfigurations;
-    }
-
     public String getBeginningDelimiter() {
         return beginningDelimiter;
     }
@@ -255,9 +245,6 @@ public class Context extends PropertyHolder {
         } else if (PropertyRegistry.CONTEXT_AUTO_DELIMIT_KEYWORDS.equals(name)
                 && stringHasValue(value)) {
             autoDelimitKeywords = isTrue(value);
-        } else if (PropertyRegistry.CONTEXT_TARGET_JAVA8.equals(name)
-                && stringHasValue(value)) {
-            isJava8Targeted = isTrue(value);
         }
     }
 
@@ -332,7 +319,19 @@ public class Context extends PropertyHolder {
     // 4. generateFiles()
     //
 
-    private List<IntrospectedTable> introspectedTables;
+    private final List<IntrospectedTable> introspectedTables = new ArrayList<>();
+
+    /**
+     * This method could be useful for users that use the library for introspection only
+     * and not for code generation.
+     *
+     * @return a list containing the results of table introspection. The list will be empty
+     *     if this method is called before introspectTables(), or if no tables are found that
+     *     match the configuration
+     */
+    public List<IntrospectedTable> getIntrospectedTables() {
+        return introspectedTables;
+    }
 
     public int getIntrospectionSteps() {
         int steps = 0;
@@ -343,7 +342,7 @@ public class Context extends PropertyHolder {
         //
         // 1. Create introspected table implementation
 
-        steps += tableConfigurations.size() * 1;
+        steps += tableConfigurations.size();
 
         return steps;
     }
@@ -351,7 +350,7 @@ public class Context extends PropertyHolder {
     /**
      * Introspect tables based on the configuration specified in the
      * constructor. This method is long running.
-     * 
+     *
      * @param callback
      *            a progress callback if progress information is desired, or
      *            <code>null</code>
@@ -365,7 +364,7 @@ public class Context extends PropertyHolder {
      *            "bar", then the fully qualified table name is "foo.bar". If
      *            the Set is null or empty, then all tables in the configuration
      *            will be used for code generation.
-     * 
+     *
      * @throws SQLException
      *             if some error arises while introspecting the specified
      *             database tables.
@@ -376,7 +375,7 @@ public class Context extends PropertyHolder {
             List<String> warnings, Set<String> fullyQualifiedTableNames)
             throws SQLException, InterruptedException {
 
-        introspectedTables = new ArrayList<>();
+        introspectedTables.clear();
         JavaTypeResolver javaTypeResolver = ObjectFactory
                 .createJavaTypeResolver(this, warnings);
 
@@ -422,10 +421,8 @@ public class Context extends PropertyHolder {
     public int getGenerationSteps() {
         int steps = 0;
 
-        if (introspectedTables != null) {
-            for (IntrospectedTable introspectedTable : introspectedTables) {
-                steps += introspectedTable.getGenerationSteps();
-            }
+        for (IntrospectedTable introspectedTable : introspectedTables) {
+            steps += introspectedTable.getGenerationSteps();
         }
 
         return steps;
@@ -450,26 +447,24 @@ public class Context extends PropertyHolder {
             }
         }
 
-        if (introspectedTables != null) {
-            for (IntrospectedTable introspectedTable : introspectedTables) {
-                callback.checkCancel();
+        for (IntrospectedTable introspectedTable : introspectedTables) {
+            callback.checkCancel();
 
-                introspectedTable.initialize();
-                introspectedTable.calculateGenerators(warnings, callback);
-                generatedJavaFiles.addAll(introspectedTable
-                        .getGeneratedJavaFiles());
-                generatedXmlFiles.addAll(introspectedTable
-                        .getGeneratedXmlFiles());
-                generatedKotlinFiles.addAll(introspectedTable
-                        .getGeneratedKotlinFiles());
+            introspectedTable.initialize();
+            introspectedTable.calculateGenerators(warnings, callback);
+            generatedJavaFiles.addAll(introspectedTable
+                    .getGeneratedJavaFiles());
+            generatedXmlFiles.addAll(introspectedTable
+                    .getGeneratedXmlFiles());
+            generatedKotlinFiles.addAll(introspectedTable
+                    .getGeneratedKotlinFiles());
 
-                generatedJavaFiles.addAll(pluginAggregator
-                        .contextGenerateAdditionalJavaFiles(introspectedTable));
-                generatedXmlFiles.addAll(pluginAggregator
-                        .contextGenerateAdditionalXmlFiles(introspectedTable));
-                generatedKotlinFiles.addAll(pluginAggregator
-                        .contextGenerateAdditionalKotlinFiles(introspectedTable));
-            }
+            generatedJavaFiles.addAll(pluginAggregator
+                    .contextGenerateAdditionalJavaFiles(introspectedTable));
+            generatedXmlFiles.addAll(pluginAggregator
+                    .contextGenerateAdditionalXmlFiles(introspectedTable));
+            generatedKotlinFiles.addAll(pluginAggregator
+                    .contextGenerateAdditionalKotlinFiles(introspectedTable));
         }
 
         generatedJavaFiles.addAll(pluginAggregator
@@ -503,7 +498,7 @@ public class Context extends PropertyHolder {
 
     public boolean autoDelimitKeywords() {
         return autoDelimitKeywords != null
-                && autoDelimitKeywords.booleanValue();
+                && autoDelimitKeywords;
     }
 
     public ConnectionFactoryConfiguration getConnectionFactoryConfiguration() {
@@ -512,13 +507,5 @@ public class Context extends PropertyHolder {
 
     public void setConnectionFactoryConfiguration(ConnectionFactoryConfiguration connectionFactoryConfiguration) {
         this.connectionFactoryConfiguration = connectionFactoryConfiguration;
-    }
-
-    public boolean isJava8Targeted() {
-        return isJava8Targeted;
-    }
-
-    public void setJava8Targeted(boolean isJava8Targeted) {
-        this.isJava8Targeted = isJava8Targeted;
     }
 }

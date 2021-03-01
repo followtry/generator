@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.ColumnRenamingRule;
@@ -56,12 +55,12 @@ import org.w3c.dom.NodeList;
 
 /**
  * This class parses configuration files into the new Configuration API.
- * 
+ *
  * @author Jeff Butler
  */
 public class MyBatisGeneratorConfigurationParser {
-    private Properties extraProperties;
-    private Properties configurationProperties;
+    private final Properties extraProperties;
+    private final Properties configurationProperties;
 
     public MyBatisGeneratorConfigurationParser(Properties extraProperties) {
         super();
@@ -703,14 +702,14 @@ public class MyBatisGeneratorConfigurationParser {
         int currentIndex = 0;
 
         List<String> answer = new ArrayList<>();
-        
+
         int markerStartIndex = s.indexOf(OPEN);
         if (markerStartIndex < 0) {
             // no parameter markers
             answer.add(s);
             currentIndex = s.length();
         }
-        
+
         while (markerStartIndex > -1) {
             if (markerStartIndex > currentIndex) {
                 // add the characters before the next parameter marker
@@ -741,18 +740,18 @@ public class MyBatisGeneratorConfigurationParser {
             } else {
                 answer.add(propertyValue);
             }
-            
+
             currentIndex = markerEndIndex + CLOSE.length();
             markerStartIndex = s.indexOf(OPEN, currentIndex);
         }
-        
+
         if (currentIndex < s.length()) {
             answer.add(s.substring(currentIndex));
         }
-        
-        return answer.stream().collect(Collectors.joining());
+
+        return String.join("", answer);
     }
-    
+
     protected void parseCommentGenerator(Context context, Node node) {
         CommentGeneratorConfiguration commentGeneratorConfiguration = new CommentGeneratorConfiguration();
 
@@ -809,18 +808,16 @@ public class MyBatisGeneratorConfigurationParser {
      * This method resolve a property from one of the three sources: system properties,
      * properties loaded from the &lt;properties&gt; configuration element, and
      * "extra" properties that may be supplied by the Maven or Ant environments.
-     * 
+     *
      * <p>If there is a name collision, system properties take precedence, followed by
      * configuration properties, followed by extra properties.
-     * 
+     *
      * @param key property key
      * @return the resolved property.  This method will return null if the property is
      *     undefined in any of the sources.
      */
     private String resolveProperty(String key) {
-        String property = null;
-
-        property = System.getProperty(key);
+        String property = System.getProperty(key);
 
         if (property == null) {
             property = configurationProperties.getProperty(key);

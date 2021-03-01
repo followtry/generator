@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package org.mybatis.generator.internal.util;
 
-import org.mybatis.generator.logging.Log;
-import org.mybatis.generator.logging.LogFactory;
-
 import static org.mybatis.generator.internal.util.messages.Messages.getString;
 
 import java.io.File;
@@ -28,15 +25,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
+
 /**
  * This class holds methods useful for constructing custom classloaders.
- * 
+ *
  * @author Jeff Butler
- * 
+ *
  */
 public class ClassloaderUtility {
 
     private static final Log LOG = LogFactory.getLog(ClassloaderUtility.class);
+
     /**
      * Utility Class - No Instances.
      */
@@ -67,7 +68,6 @@ public class ClassloaderUtility {
 
         ClassLoader parent = Thread.currentThread().getContextClassLoader();
 
-        return new URLClassLoader(urls.toArray(new URL[urls
-                .size()]), parent);
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 }

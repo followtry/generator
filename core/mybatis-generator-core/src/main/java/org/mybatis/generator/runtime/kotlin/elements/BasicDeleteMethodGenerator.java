@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class BasicDeleteMethodGenerator extends AbstractKotlinFunctionGenerator 
                 .withImport("org.mybatis.dynamic.sql.util.SqlProviderAdapter") //$NON-NLS-1$
                 .withImport("org.apache.ibatis.annotations.DeleteProvider") //$NON-NLS-1$
                 .build();
-        
+
         addFunctionComment(functionAndImports);
         return functionAndImports;
     }
@@ -49,14 +49,13 @@ public class BasicDeleteMethodGenerator extends AbstractKotlinFunctionGenerator 
         return context.getPlugins().clientBasicDeleteMethodGenerated(function, kotlinFile, introspectedTable);
     }
 
-    public static class Builder extends BaseBuilder<Builder, BasicDeleteMethodGenerator> {
+    public static class Builder extends BaseBuilder<Builder> {
 
         @Override
         public Builder getThis() {
             return this;
         }
 
-        @Override
         public BasicDeleteMethodGenerator build() {
             return new BasicDeleteMethodGenerator(this);
         }

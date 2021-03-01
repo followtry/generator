@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -61,11 +61,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         Method method = new Method(type.getShortName());
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setConstructor(true);
-        if (context.isJava8Targeted()) {
-            method.addBodyLine("oredCriteria = new ArrayList<>();"); //$NON-NLS-1$
-        } else {
-            method.addBodyLine("oredCriteria = new ArrayList<Criteria>();"); //$NON-NLS-1$
-        }
+        method.addBodyLine("oredCriteria = new ArrayList<>();"); //$NON-NLS-1$
 
         commentGenerator.addGeneralMethodComment(method, introspectedTable);
         topLevelClass.addMethod(method);
@@ -350,11 +346,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         method.setVisibility(JavaVisibility.PROTECTED);
         method.setConstructor(true);
         method.addBodyLine("super();"); //$NON-NLS-1$
-        if (context.isJava8Targeted()) {
-            method.addBodyLine("criteria = new ArrayList<>();"); //$NON-NLS-1$
-        } else {
-            method.addBodyLine("criteria = new ArrayList<Criterion>();"); //$NON-NLS-1$
-        }
+        method.addBodyLine("criteria = new ArrayList<>();"); //$NON-NLS-1$
         answer.addMethod(method);
 
         List<String> criteriaLists = new ArrayList<>();
@@ -400,11 +392,11 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         // now generate the getAllCriteria method
         if (criteriaLists.size() > 1) {
             field = new Field("allCriteria", //$NON-NLS-1$
-                    new FullyQualifiedJavaType("List<Criterion>")); //$NON-NLS-1$                    
+                    new FullyQualifiedJavaType("List<Criterion>")); //$NON-NLS-1$
             field.setVisibility(JavaVisibility.PROTECTED);
             answer.addField(field);
         }
-        
+
         method = new Method("getAllCriteria"); //$NON-NLS-1$
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setReturnType(new FullyQualifiedJavaType("List<Criterion>")); //$NON-NLS-1$
@@ -412,11 +404,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
             method.addBodyLine("return criteria;"); //$NON-NLS-1$
         } else {
             method.addBodyLine("if (allCriteria == null) {"); //$NON-NLS-1$
-            if (context.isJava8Targeted()) {
-                method.addBodyLine("allCriteria = new ArrayList<>();"); //$NON-NLS-1$
-            } else {
-                method.addBodyLine("allCriteria = new ArrayList<Criterion>();"); //$NON-NLS-1$
-            }
+            method.addBodyLine("allCriteria = new ArrayList<>();"); //$NON-NLS-1$
 
             strIter = criteriaLists.iterator();
             while (strIter.hasNext()) {
@@ -538,11 +526,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
                     "throw new RuntimeException(\"Value list for \" + property + \"" //$NON-NLS-1$
                     + " cannot be null or empty\");"); //$NON-NLS-1$
             method.addBodyLine("}"); //$NON-NLS-1$
-            if (context.isJava8Targeted()) {
-                method.addBodyLine("List<java.sql.Date> dateList = new ArrayList<>();"); //$NON-NLS-1$
-            } else {
-                method.addBodyLine("List<java.sql.Date> dateList = new ArrayList<java.sql.Date>();"); //$NON-NLS-1$
-            }
+            method.addBodyLine("List<java.sql.Date> dateList = new ArrayList<>();"); //$NON-NLS-1$
             method.addBodyLine("Iterator<Date> iter = values.iterator();"); //$NON-NLS-1$
             method.addBodyLine("while (iter.hasNext()) {"); //$NON-NLS-1$
             method
@@ -605,11 +589,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
                     "throw new RuntimeException(\"Value list for \" + property + \"" //$NON-NLS-1$
                     + " cannot be null or empty\");"); //$NON-NLS-1$
             method.addBodyLine("}"); //$NON-NLS-1$
-            if (context.isJava8Targeted()) {
-                method.addBodyLine("List<java.sql.Time> timeList = new ArrayList<>();"); //$NON-NLS-1$
-            } else {
-                method.addBodyLine("List<java.sql.Time> timeList = new ArrayList<java.sql.Time>();"); //$NON-NLS-1$
-            }
+            method.addBodyLine("List<java.sql.Time> timeList = new ArrayList<>();"); //$NON-NLS-1$
             method.addBodyLine("Iterator<Date> iter = values.iterator();"); //$NON-NLS-1$
             method.addBodyLine("while (iter.hasNext()) {"); //$NON-NLS-1$
             method
@@ -718,7 +698,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
 
     private Method getSingleValueMethod(IntrospectedColumn introspectedColumn,
             String nameFragment, String operator) {
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append(introspectedColumn.getJavaProperty());
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
@@ -763,14 +743,14 @@ public class ExampleGenerator extends AbstractJavaGenerator {
 
     /**
      * Generates methods that set between and not between conditions.
-     * 
+     *
      * @param introspectedColumn the introspected column
      * @param betweenMethod true if between, else not between
      * @return a generated method for the between or not between method
      */
     private Method getSetBetweenOrNotBetweenMethod(
             IntrospectedColumn introspectedColumn, boolean betweenMethod) {
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append(introspectedColumn.getJavaProperty());
         sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
@@ -824,7 +804,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
 
     /**
      * Generates an In or NotIn method.
-     * 
+     *
      * @param introspectedColumn the introspected column
      * @param inMethod
      *            if true generates an "in" method, else generates a "not in"
@@ -897,10 +877,10 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         sb.insert(0, "and"); //$NON-NLS-1$
         sb.append(nameFragment);
         Method method = new Method(sb.toString());
-        
+
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setReturnType(FullyQualifiedJavaType.getCriteriaInstance());
-        
+
         sb.setLength(0);
         sb.append("addCriterion(\""); //$NON-NLS-1$
         sb.append(MyBatis3FormattingUtilities
@@ -917,7 +897,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
     /**
      * This method adds all the extra methods and fields required to support a
      * user defined type handler on some column.
-     * 
+     *
      * @param introspectedColumn the introspected column
      * @param constructor the constructor
      * @param innerClass the enclosing class
@@ -950,11 +930,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         // add constructor initialization
         sb.setLength(0);
         sb.append(field.getName());
-        if (context.isJava8Targeted()) {
-            sb.append(" = new ArrayList<>();"); //$NON-NLS-1$
-        } else {
-            sb.append(" = new ArrayList<Criterion>();"); //$NON-NLS-1$
-        }
+        sb.append(" = new ArrayList<>();"); //$NON-NLS-1$
         constructor.addBodyLine(sb.toString());
 
         // now add the methods for simplifying the individual field set methods
@@ -1009,7 +985,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         method.addBodyLine(
                 String.format("%s.add(new Criterion(condition, value1, value2, \"%s\"));", //$NON-NLS-1$
                         field.getName(), introspectedColumn.getTypeHandler()));
-        
+
         method.addBodyLine("allCriteria = null;"); //$NON-NLS-1$
         innerClass.addMethod(method);
 

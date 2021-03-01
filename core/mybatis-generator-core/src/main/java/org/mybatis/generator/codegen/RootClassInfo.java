@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,15 +32,14 @@ import org.mybatis.generator.internal.ObjectFactory;
 /**
  * Holds information about a class (uses the JavaBeans Introspector to find properties).
  * @author Jeff Butler
- * 
+ *
  */
 public class RootClassInfo {
 
-    private static Map<String, RootClassInfo> rootClassInfoMap;
+    private static final Map<String, RootClassInfo> rootClassInfoMap;
 
     static {
-        rootClassInfoMap = Collections
-                .synchronizedMap(new HashMap<String, RootClassInfo>());
+        rootClassInfoMap = Collections.synchronizedMap(new HashMap<>());
     }
 
     public static RootClassInfo getInstance(String className,
@@ -53,15 +52,15 @@ public class RootClassInfo {
      * a generation run to clear the cached root class info in case there has been a change.
      * For example, when using the eclipse launcher, the cache would be kept until eclipse
      * was restarted.
-     * 
+     *
      */
     public static void reset() {
         rootClassInfoMap.clear();
     }
 
     private PropertyDescriptor[] propertyDescriptors;
-    private String className;
-    private List<String> warnings;
+    private final String className;
+    private final List<String> warnings;
     private boolean genericMode = false;
 
     private RootClassInfo(String className, List<String> warnings) {
@@ -101,9 +100,7 @@ public class RootClassInfo {
 
         // get method names from class and check against this column definition.
         // better yet, have a map of method Names. check against it.
-        for (int i = 0; i < propertyDescriptors.length; i++) {
-            PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             if (hasProperty(propertyName, propertyType, propertyDescriptor)) {
                 found = true;
                 break;
@@ -112,18 +109,18 @@ public class RootClassInfo {
 
         return found;
     }
-    
+
     private boolean hasProperty(String propertyName, String propertyType, PropertyDescriptor propertyDescriptor) {
         return hasCorrectName(propertyName, propertyDescriptor)
                 && isProperType(propertyName, propertyType, propertyDescriptor)
                 && hasGetter(propertyName, propertyDescriptor)
                 && hasSetter(propertyName, propertyDescriptor);
     }
-    
+
     private boolean hasCorrectName(String propertyName, PropertyDescriptor propertyDescriptor) {
         return propertyDescriptor.getName().equals(propertyName);
     }
-    
+
     private boolean isProperType(String propertyName, String propertyType, PropertyDescriptor propertyDescriptor) {
         String introspectedPropertyType = propertyDescriptor.getPropertyType().getName();
         if (genericMode && introspectedPropertyType.equals("java.lang.Object")) { //$NON-NLS-1$
@@ -135,7 +132,7 @@ public class RootClassInfo {
                     propertyName, className, propertyType));
             return false;
         }
-        
+
         return true;
     }
 
@@ -145,7 +142,7 @@ public class RootClassInfo {
                     propertyName, className));
             return false;
         }
-        
+
         return true;
     }
 
@@ -155,7 +152,7 @@ public class RootClassInfo {
                     propertyName, className));
             return false;
         }
-        
+
         return true;
     }
 }

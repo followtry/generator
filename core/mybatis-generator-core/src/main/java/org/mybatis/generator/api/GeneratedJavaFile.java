@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2018 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import org.mybatis.generator.api.dom.java.CompilationUnit;
 
 public class GeneratedJavaFile extends GeneratedFile {
 
-    private CompilationUnit compilationUnit;
+    private final CompilationUnit compilationUnit;
 
-    private String fileEncoding;
+    private final String fileEncoding;
 
-    private JavaFormatter javaFormatter;
+    private final JavaFormatter javaFormatter;
 
     public GeneratedJavaFile(CompilationUnit compilationUnit,
             String targetProject,
@@ -60,7 +60,7 @@ public class GeneratedJavaFile extends GeneratedFile {
      * This method is required by the Eclipse Java merger. If you are not
      * running in Eclipse, or some other system that implements the Java merge
      * function, you may return null from this method.
-     * 
+     *
      * @return the CompilationUnit associated with this file, or null if the
      *         file is not mergeable.
      */

@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,26 +33,26 @@ import org.mybatis.generator.internal.DefaultShellCallback;
  * project. The purpose of this test is to exercise the Kotlin code generators during the initial build
  * as a kind of smoke test - currently we do not try to parse the generated code. This test also shows
  * test coverage as it mimics the code paths executed by the integration test.
- * 
+ *
  * @author Jeff Butler
  *
  */
-public class KotlinCodeGenerationTest {
+class KotlinCodeGenerationTest {
 
     @ParameterizedTest
     @MethodSource("generateKotlinFiles")
-    public void testKotlinParse(GeneratedKotlinFile generatedKotlinFile) {
+    void testKotlinParse(GeneratedKotlinFile generatedKotlinFile) {
         // for now, just let the test pass. if we find a good Kotlin parser, then mimic the
         // function of the Java test by trying to parse generated code
         assertTrue(true);
     }
 
-    public static List<GeneratedKotlinFile> generateKotlinFiles() throws Exception {
+    static List<GeneratedKotlinFile> generateKotlinFiles() throws Exception {
         JavaCodeGenerationTest.createDatabase();
         return generateKotlinFiles("/scripts/generatorConfig-kotlin.xml");
     }
 
-    private static List<GeneratedKotlinFile> generateKotlinFiles(String configFile) throws Exception {
+    static List<GeneratedKotlinFile> generateKotlinFiles(String configFile) throws Exception {
         List<String> warnings = new ArrayList<>();
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(KotlinCodeGenerationTest.class.getResourceAsStream(configFile));

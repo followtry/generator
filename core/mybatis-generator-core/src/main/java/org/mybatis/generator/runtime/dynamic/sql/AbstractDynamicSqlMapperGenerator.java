@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -33,16 +33,16 @@ public abstract class AbstractDynamicSqlMapperGenerator extends AbstractJavaClie
 
     // record type for insert, select, update
     protected FullyQualifiedJavaType recordType;
-    
+
     // id to use for the common result map
     protected String resultMapId;
-    
+
     // name of the field containing the table in the support class
     protected String tableFieldName;
-    
+
     protected FragmentGenerator fragmentGenerator;
 
-    public AbstractDynamicSqlMapperGenerator(String project) {
+    protected AbstractDynamicSqlMapperGenerator(String project) {
         super(project, false);
     }
 
@@ -87,13 +87,15 @@ public abstract class AbstractDynamicSqlMapperGenerator extends AbstractJavaClie
                 introspectedTable, context.getCommentGenerator(), warnings).generate();
     }
 
-    protected void generate(Interface interfaze, AbstractMethodGenerator generator) {
+    protected boolean generate(Interface interfaze, AbstractMethodGenerator generator) {
         MethodAndImports mi = generator.generateMethodAndImports();
         if (mi != null && generator.callPlugins(mi.getMethod(), interfaze)) {
             interfaze.addMethod(mi.getMethod());
             interfaze.addImportedTypes(mi.getImports());
             interfaze.addStaticImports(mi.getStaticImports());
+            return true;
         }
+        return false;
     }
 
     @Override

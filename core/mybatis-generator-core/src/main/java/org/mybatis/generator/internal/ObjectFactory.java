@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
-import org.mybatis.generator.runtime.dynamic.sql.IntrospectedTableMyBatis3DynamicSqlImplV1;
-import org.mybatis.generator.runtime.dynamic.sql.IntrospectedTableMyBatis3DynamicSqlImplV2;
+import org.mybatis.generator.runtime.dynamic.sql.IntrospectedTableMyBatis3DynamicSqlImpl;
 import org.mybatis.generator.runtime.kotlin.IntrospectedTableKotlinImpl;
 
 /**
@@ -56,7 +55,7 @@ import org.mybatis.generator.runtime.kotlin.IntrospectedTableKotlinImpl;
  */
 public class ObjectFactory {
 
-    private static List<ClassLoader> externalClassLoaders;
+    private static final List<ClassLoader> externalClassLoaders;
 
     static {
         externalClassLoaders = new ArrayList<>();
@@ -74,7 +73,7 @@ public class ObjectFactory {
      * a generation run so that and change to the classloading configuration
      * will be reflected.  For example, if the eclipse launcher changes configuration
      * it might not be updated if eclipse hasn't been restarted.
-     * 
+     *
      */
     public static void reset() {
         externalClassLoaders.clear();
@@ -321,7 +320,7 @@ public class ObjectFactory {
 
     /**
      * Creates an introspected table implementation that is only usable for validation .
-     * 
+     *
      *
      * @param context
      *            the context
@@ -330,17 +329,13 @@ public class ObjectFactory {
     public static IntrospectedTable createIntrospectedTableForValidation(Context context) {
         String type = context.getTargetRuntime();
         if (!stringHasValue(type)) {
-            type = IntrospectedTableMyBatis3DynamicSqlImplV2.class.getName();
+            type = IntrospectedTableMyBatis3DynamicSqlImpl.class.getName();
         } else if ("MyBatis3".equalsIgnoreCase(type)) { //$NON-NLS-1$
             type = IntrospectedTableMyBatis3Impl.class.getName();
         } else if ("MyBatis3Simple".equalsIgnoreCase(type)) { //$NON-NLS-1$
             type = IntrospectedTableMyBatis3SimpleImpl.class.getName();
         } else if ("MyBatis3DynamicSql".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            type = IntrospectedTableMyBatis3DynamicSqlImplV2.class.getName();
-        } else if ("MyBatis3DynamicSqlV1".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            type = IntrospectedTableMyBatis3DynamicSqlImplV1.class.getName();
-        } else if ("MyBatis3DynamicSqlV2".equalsIgnoreCase(type)) { //$NON-NLS-1$
-            type = IntrospectedTableMyBatis3DynamicSqlImplV2.class.getName();
+            type = IntrospectedTableMyBatis3DynamicSqlImpl.class.getName();
         } else if ("MyBatis3Kotlin".equalsIgnoreCase(type)) { //$NON-NLS-1$
             type = IntrospectedTableKotlinImpl.class.getName();
         }

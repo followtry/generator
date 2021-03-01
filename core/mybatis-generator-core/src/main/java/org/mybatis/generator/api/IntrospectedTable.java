@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -48,9 +48,9 @@ import org.mybatis.generator.internal.rules.Rules;
  * Base class for all code generator implementations. This class provides many
  * of the housekeeping methods needed to implement a code generator, with only
  * the actual code generation methods left unimplemented.
- * 
+ *
  * @author Jeff Butler
- * 
+ *
  */
 public abstract class IntrospectedTable {
 
@@ -106,11 +106,11 @@ public abstract class IntrospectedTable {
 
     protected Rules rules;
 
-    protected List<IntrospectedColumn> primaryKeyColumns = new ArrayList<>();
+    protected final List<IntrospectedColumn> primaryKeyColumns = new ArrayList<>();
 
-    protected List<IntrospectedColumn> baseColumns = new ArrayList<>();
+    protected final List<IntrospectedColumn> baseColumns = new ArrayList<>();
 
-    protected List<IntrospectedColumn> blobColumns = new ArrayList<>();
+    protected final List<IntrospectedColumn> blobColumns = new ArrayList<>();
 
     protected TargetRuntime targetRuntime;
 
@@ -118,10 +118,10 @@ public abstract class IntrospectedTable {
      * Attributes may be used by plugins to capture table related state between
      * the different plugin calls.
      */
-    protected Map<String, Object> attributes = new HashMap<>();
+    protected final Map<String, Object> attributes = new HashMap<>();
 
     /** Internal attributes are used to store commonly accessed items by all code generators. */
-    protected Map<IntrospectedTable.InternalAttribute, String> internalAttributes =
+    protected final Map<IntrospectedTable.InternalAttribute, String> internalAttributes =
             new EnumMap<>(InternalAttribute.class);
 
     /**
@@ -134,8 +134,7 @@ public abstract class IntrospectedTable {
      */
     protected String tableType;
 
-    public IntrospectedTable(TargetRuntime targetRuntime) {
-        super();
+    protected IntrospectedTable(TargetRuntime targetRuntime) {
         this.targetRuntime = targetRuntime;
     }
 
@@ -161,7 +160,7 @@ public abstract class IntrospectedTable {
                 .filter(ic -> columnMatches(ic, columnName))
                 .findFirst();
     }
-    
+
     private boolean columnMatches(IntrospectedColumn introspectedColumn, String columnName) {
         if (introspectedColumn.isColumnNameDelimited()) {
             return introspectedColumn.getActualColumnName().equals(columnName);
@@ -173,7 +172,7 @@ public abstract class IntrospectedTable {
     /**
      * Returns true if any of the columns in the table are JDBC Dates (as
      * opposed to timestamps).
-     * 
+     *
      * @return true if the table contains DATE columns
      */
     public boolean hasJDBCDateColumns() {
@@ -185,7 +184,7 @@ public abstract class IntrospectedTable {
     /**
      * Returns true if any of the columns in the table are JDBC Times (as
      * opposed to timestamps).
-     * 
+     *
      * @return true if the table contains TIME columns
      */
     public boolean hasJDBCTimeColumns() {
@@ -198,7 +197,7 @@ public abstract class IntrospectedTable {
      * Returns the columns in the primary key. If the generatePrimaryKeyClass()
      * method returns false, then these columns will be iterated as the
      * parameters of the selectByPrimaryKay and deleteByPrimaryKey methods
-     * 
+     *
      * @return a List of ColumnDefinition objects for columns in the primary key
      */
     public List<IntrospectedColumn> getPrimaryKeyColumns() {
@@ -658,12 +657,8 @@ public abstract class IntrospectedTable {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(config.getTargetPackage());
-
-        sb.append(fullyQualifiedTable.getSubPackageForClientOrSqlMap(isSubPackagesEnabled(config)));
-
-        return sb.toString();
+        return config.getTargetPackage() +
+                fullyQualifiedTable.getSubPackageForClientOrSqlMap(isSubPackagesEnabled(config));
     }
 
     protected void calculateJavaClientAttributes() {
@@ -700,7 +695,7 @@ public abstract class IntrospectedTable {
             sb.append("SqlProvider"); //$NON-NLS-1$
         }
         setMyBatis3SqlProviderType(sb.toString());
-        
+
         sb.setLength(0);
         sb.append(calculateJavaClientInterfacePackage());
         sb.append('.');
@@ -713,11 +708,8 @@ public abstract class IntrospectedTable {
         JavaModelGeneratorConfiguration config = context
                 .getJavaModelGeneratorConfiguration();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(config.getTargetPackage());
-        sb.append(fullyQualifiedTable.getSubPackageForModel(isSubPackagesEnabled(config)));
-
-        return sb.toString();
+        return config.getTargetPackage() +
+                fullyQualifiedTable.getSubPackageForModel(isSubPackagesEnabled(config));
     }
 
     protected void calculateModelAttributes() {
@@ -762,7 +754,7 @@ public abstract class IntrospectedTable {
     /**
      * If property exampleTargetPackage specified for example use the specified value, else
      * use default value (targetPackage).
-     * 
+     *
      * @return the calculated package
      */
     protected String calculateJavaModelExamplePackage() {
@@ -771,18 +763,16 @@ public abstract class IntrospectedTable {
         if (!stringHasValue(exampleTargetPackage)) {
             return calculateJavaModelPackage();
         }
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append(exampleTargetPackage);
-        sb.append(fullyQualifiedTable.getSubPackageForModel(isSubPackagesEnabled(config)));
-        return sb.toString();
+
+        return exampleTargetPackage +
+                fullyQualifiedTable.getSubPackageForModel(isSubPackagesEnabled(config));
     }
 
     protected String calculateSqlMapPackage() {
         StringBuilder sb = new StringBuilder();
         SqlMapGeneratorConfiguration config = context
                 .getSqlMapGeneratorConfiguration();
-        
+
         // config can be null if the Java client does not require XML
         if (config != null) {
             sb.append(config.getTargetPackage());
@@ -791,7 +781,7 @@ public abstract class IntrospectedTable {
                 String mapperName = tableConfiguration.getMapperName();
                 int ind = mapperName.lastIndexOf('.');
                 if (ind != -1) {
-                    sb.append('.').append(mapperName.substring(0, ind));
+                    sb.append('.').append(mapperName, 0, ind);
                 }
             } else if (stringHasValue(fullyQualifiedTable.getDomainObjectSubPackage())) {
                 sb.append('.').append(fullyQualifiedTable.getDomainObjectSubPackage());
@@ -852,7 +842,7 @@ public abstract class IntrospectedTable {
 
     /**
      * This method can be used to initialize the generators before they will be called.
-     * 
+     *
      * <p>This method is called after all the setX methods, but before getNumberOfSubtasks(), getGeneratedJavaFiles, and
      * getGeneratedXmlFiles.
      *
@@ -868,7 +858,7 @@ public abstract class IntrospectedTable {
      * This method should return a list of generated Java files related to this
      * table. This list could include various types of model classes, as well as
      * DAO classes.
-     * 
+     *
      * @return the list of generated Java files for this table
      */
     public abstract List<GeneratedJavaFile> getGeneratedJavaFiles();
@@ -877,15 +867,15 @@ public abstract class IntrospectedTable {
      * This method should return a list of generated XML files related to this
      * table. Most implementations will only return one file - the generated
      * SqlMap file.
-     * 
+     *
      * @return the list of generated XML files for this table
      */
     public abstract List<GeneratedXmlFile> getGeneratedXmlFiles();
-    
+
     /**
      * This method should return a list of generated Kotlin files related to this
      * table. This list could include a data classes, a mapper interface, extension methods, etc.
-     * 
+     *
      * @return the list of generated Kotlin files for this table
      */
     public abstract List<GeneratedKotlinFile> getGeneratedKotlinFiles();
@@ -893,7 +883,7 @@ public abstract class IntrospectedTable {
     /**
      * This method should return the number of progress messages that will be
      * send during the generation phase.
-     * 
+     *
      * @return the number of progress messages
      */
     public abstract int getGenerationSteps();
@@ -1001,19 +991,19 @@ public abstract class IntrospectedTable {
                 InternalAttribute.ATTR_MYBATIS3_SQL_PROVIDER_TYPE,
                 mybatis3SqlProviderType);
     }
-    
+
     public String getMyBatisDynamicSqlSupportType() {
         return internalAttributes.get(InternalAttribute.ATTR_MYBATIS_DYNAMIC_SQL_SUPPORT_TYPE);
     }
-    
+
     public void setMyBatisDynamicSqlSupportType(String s) {
         internalAttributes.put(InternalAttribute.ATTR_MYBATIS_DYNAMIC_SQL_SUPPORT_TYPE, s);
     }
-    
+
     public TargetRuntime getTargetRuntime() {
         return targetRuntime;
     }
-    
+
     public boolean isImmutable() {
         Properties properties;
 

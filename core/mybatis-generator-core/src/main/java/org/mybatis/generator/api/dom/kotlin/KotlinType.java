@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import java.util.Objects;
 
 public class KotlinType extends KotlinNamedItemContainer {
 
-    private List<KotlinProperty> constructorProperties = new ArrayList<>();
-    private Type type;
-    private List<String> superTypes = new ArrayList<>();
+    private final List<KotlinProperty> constructorProperties = new ArrayList<>();
+    private final Type type;
+    private final List<String> superTypes = new ArrayList<>();
 
     public enum Type {
         CLASS("class"), //$NON-NLS-1$
         INTERFACE("interface"), //$NON-NLS-1$
         OBJECT("object"); //$NON-NLS-1$
 
-        private String value;
+        private final String value;
 
         Type(String value) {
             this.value = value;
@@ -47,7 +47,7 @@ public class KotlinType extends KotlinNamedItemContainer {
         constructorProperties.addAll(builder.constructorProperties);
         superTypes.addAll(builder.superTypes);
     }
-    
+
     public List<KotlinProperty> getConstructorProperties() {
         return constructorProperties;
     }
@@ -59,9 +59,13 @@ public class KotlinType extends KotlinNamedItemContainer {
     public List<String> getSuperTypes() {
         return superTypes;
     }
-    
+
     public void addConstructorProperty(KotlinProperty property) {
         constructorProperties.add(property);
+    }
+
+    public void addSuperType(String superType) {
+        superTypes.add(superType);
     }
 
     @Override
@@ -82,9 +86,9 @@ public class KotlinType extends KotlinNamedItemContainer {
     }
 
     public static class Builder extends NamedItemContainerBuilder<Builder> {
-        private Type type;
-        private List<KotlinProperty> constructorProperties = new ArrayList<>();
-        private List<String> superTypes = new ArrayList<>();
+        private final Type type;
+        private final List<KotlinProperty> constructorProperties = new ArrayList<>();
+        private final List<String> superTypes = new ArrayList<>();
 
         private Builder(Type type, String name) {
             super(name);

@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.mybatis.generator.codegen.mybatis3.javamapper.elements.sqlprovider.Pr
 
 public class SqlProviderGenerator extends AbstractJavaGenerator {
 
-    private boolean useLegacyBuilder;
+    private final boolean useLegacyBuilder;
 
     public SqlProviderGenerator(String project, boolean useLegacyBuilder) {
         super(project);
@@ -59,8 +59,8 @@ public class SqlProviderGenerator extends AbstractJavaGenerator {
         topLevelClass.setVisibility(JavaVisibility.PUBLIC);
         commentGenerator.addJavaFileComment(topLevelClass);
 
-        boolean addApplyWhereMethod = false;
-        addApplyWhereMethod |= addCountByExampleMethod(topLevelClass);
+        boolean addApplyWhereMethod;
+        addApplyWhereMethod = addCountByExampleMethod(topLevelClass);
         addApplyWhereMethod |= addDeleteByExampleMethod(topLevelClass);
         addInsertSelectiveMethod(topLevelClass);
         addApplyWhereMethod |= addSelectByExampleWithBLOBsMethod(topLevelClass);
@@ -75,7 +75,7 @@ public class SqlProviderGenerator extends AbstractJavaGenerator {
         }
 
         List<CompilationUnit> answer = new ArrayList<>();
-        
+
         if (!topLevelClass.getMethods().isEmpty()
                 && context.getPlugins().providerGenerated(topLevelClass, introspectedTable)) {
             answer.add(topLevelClass);

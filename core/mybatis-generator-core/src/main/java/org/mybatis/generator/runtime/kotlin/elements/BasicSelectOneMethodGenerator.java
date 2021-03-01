@@ -1,5 +1,5 @@
-/**
- *    Copyright 2006-2019 the original author or authors.
+/*
+ *    Copyright 2006-2020 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import org.mybatis.generator.api.dom.kotlin.KotlinFunction;
 
 public class BasicSelectOneMethodGenerator extends AbstractKotlinFunctionGenerator {
 
-    private FullyQualifiedKotlinType recordType;
-    private String resultMapId;
-    private KotlinFragmentGenerator fragmentGenerator;
+    private final FullyQualifiedKotlinType recordType;
+    private final String resultMapId;
+    private final KotlinFragmentGenerator fragmentGenerator;
 
     private BasicSelectOneMethodGenerator(Builder builder) {
         super(builder);
@@ -73,7 +73,7 @@ public class BasicSelectOneMethodGenerator extends AbstractKotlinFunctionGenerat
         return context.getPlugins().clientBasicSelectOneMethodGenerated(kotlinFunction, kotlinFile, introspectedTable);
     }
 
-    public static class Builder extends BaseBuilder<Builder, BasicSelectOneMethodGenerator> {
+    public static class Builder extends BaseBuilder<Builder> {
 
         private FullyQualifiedKotlinType recordType;
         private String resultMapId;
@@ -99,7 +99,6 @@ public class BasicSelectOneMethodGenerator extends AbstractKotlinFunctionGenerat
             return this;
         }
 
-        @Override
         public BasicSelectOneMethodGenerator build() {
             return new BasicSelectOneMethodGenerator(this);
         }
